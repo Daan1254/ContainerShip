@@ -15,6 +15,7 @@ public class Row
     
     public bool AddContainer(Container container)
     {
+        // TODO: Implement better logic for a more balanced ship
         foreach (Stack stack in this.Stacks)
         {
             if (stack.AddContainer(container))

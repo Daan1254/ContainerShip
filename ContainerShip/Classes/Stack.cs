@@ -2,18 +2,17 @@ namespace ContainerShip.Classes;
 
 public class Stack
 {
-    public int MaxWeight { get; set; }
+    private readonly int _maxWeight = 120;
     public List<Container> Containers { get; set; }
 
     public Stack()
     {
-        MaxWeight = 120;
         Containers = new List<Container>();
     }
 
     public bool AddContainer(Container container)
     {
-        if ((this.Height + container.Weight) > this.MaxWeight)
+        if ((this.Weight + container.Weight) > this._maxWeight)
         {
             return false;
         }
@@ -38,16 +37,16 @@ public class Stack
     }
     
     
-    private int Height
+    private int Weight
     {
         get
         {
-            int height = 0;
+            int weight = 0;
             foreach (Container container in this.Containers)
             {
-                height += container.Weight;
+                weight += container.Weight;
             }
-            return height;
+            return weight;
         }
     }
 }

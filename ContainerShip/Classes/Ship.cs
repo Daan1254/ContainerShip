@@ -25,7 +25,7 @@ public class Ship
         return true;
     }
 
-    public void AddContainer(Container container)
+    private void AddContainer(Container container)
     {
         bool added = false;
         foreach (Row row in this.Rows)
