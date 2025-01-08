@@ -27,11 +27,6 @@ public class Ship
 
     public void AddContainer(Container container)
     {
-        if (this.Rows.Count == 0)
-        {
-            this.Rows.Add(new Row());
-        }
-
         foreach (Row row in this.Rows)
         {
             if (row.CanAddContainer(container))

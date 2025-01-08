@@ -36,6 +36,13 @@ public class Row
 
     public bool IsEmpty()
     {
-        return !this.Stacks.Any();
+        foreach (Stack stack in this.Stacks)
+        {
+            if (stack.Containers.Count > 0)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 }
