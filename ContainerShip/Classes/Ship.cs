@@ -2,24 +2,25 @@ namespace ContainerShip.Classes;
 
 public class Ship
 {
-    public int Length { get; set; }
-    public int Width { get; set; }
-
-    public List<Row> Rows { get; set; }
+    public int Length { get; private set; }
+    public int Width { get; private set; }
+    
+    public IReadOnlyList<Row> Rows => _rows.AsReadOnly();
+    private List<Row> _rows { get; set; }
 
     public Ship(int length, int width)
     {
         Length = length;
         Width = width;
-        Rows = new List<Row>();
+        _rows = new List<Row>();
 
         for (int i = 0; i < length; i++)
         {
-            Rows.Add(new Row(width));
+            _rows.Add(new Row(width));
         }
-
     }
 
+    // TODO
     public bool isBalanced()
     {
         return true;
@@ -28,7 +29,7 @@ public class Ship
     private void AddContainer(Container container)
     {
         bool added = false;
-        foreach (Row row in this.Rows)
+        foreach (Row row in this._rows)
         {
             if (row.AddContainer(container))
             {

@@ -3,16 +3,24 @@ namespace ContainerShip.Classes;
 public class Stack
 {
     private readonly int _maxWeight = 120;
+    public bool IsFirstRow { get; set; }
     public List<Container> Containers { get; set; }
 
-    public Stack()
+    public Stack(bool isFirstRow)
     {
+        IsFirstRow = isFirstRow;
         Containers = new List<Container>();
     }
+
 
     public bool AddContainer(Container container)
     {
         if ((this.Weight + container.Weight) > this._maxWeight)
+        {
+            return false;
+        }
+        
+        if (container.RequiresCooling && !IsFirstRow)
         {
             return false;
         }
@@ -30,6 +38,7 @@ public class Stack
             {
                 return false;
             }
+            
         }
         // add this container to bottom of stack Regular container
         this.Containers.Insert(0, container);

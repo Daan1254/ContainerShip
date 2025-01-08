@@ -16,18 +16,21 @@ if (containerCount > 0)
     for (int i = 0; i < containerCount; i++)
     {
         Random random = new Random();
-        int containerType = random.Next(3);
+        int containerType = random.Next(0,5);
         int weight = random.Next(1, 26);
         switch (containerType)
         {
-            case 0:
-                containers.Add(new CoolableContainer(weight));
-                break;
             case 1:
-                containers.Add(new ValuableContainer(weight));
+                containers.Add(new RegularContainer(weight));
                 break;
             case 2:
-                containers.Add(new RegularContainer(weight));
+                containers.Add(new ValuableContainer(weight));
+                break;
+            case 3:
+                containers.Add(new CoolableContainer(weight));
+                break;
+            case 4:
+                containers.Add(new ValuableCoolableContainer(weight));
                 break;
         }
     }
