@@ -40,7 +40,6 @@ if (containerCount > 0)
     string url = UrlGenerator.GetUrl(ship);
     TextCopy.ClipboardService.SetText(url);
     Console.WriteLine("URL copied to clipboard: " + url);
-
 }
 
 
