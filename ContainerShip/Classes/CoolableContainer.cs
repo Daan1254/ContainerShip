@@ -2,9 +2,10 @@ namespace ContainerShip.Classes;
 
 public class CoolableContainer : Container
 {
-    public CoolableContainer()
+    public CoolableContainer(int weight) : base(ContainerType.Coolable, weight) 
     {
         RequiresCooling = true;
+        Type = ContainerType.Coolable;
     }
 
     public override bool CanSupport(Container container)
