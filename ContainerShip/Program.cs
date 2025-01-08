@@ -16,7 +16,7 @@ if (containerCount > 0)
     for (int i = 0; i < containerCount; i++)
     {
         Random random = new Random();
-        int containerType = random.Next(0,5);
+        int containerType = random.Next(1,5);
         int weight = random.Next(1, 26);
         switch (containerType)
         {
