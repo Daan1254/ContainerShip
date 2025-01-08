@@ -12,12 +12,12 @@ public class Ship
         Length = length;
         Width = width;
         Rows = new List<Row>();
-        
-        for (int i= 0; i < length; i++)
+
+        for (int i = 0; i < length; i++)
         {
             Rows.Add(new Row(width));
         }
-        
+
     }
 
     public bool isBalanced()
@@ -27,13 +27,19 @@ public class Ship
 
     public void AddContainer(Container container)
     {
+        bool added = false;
         foreach (Row row in this.Rows)
         {
-            if (row.CanAddContainer(container))
+            if (row.AddContainer(container))
             {
-                row.AddContainer(container);
-                return;
+                added = true;
+                break;
             }
+        }
+
+        if (!added)
+        {
+            Console.WriteLine($"[WARNING] Container {container.Type} could not be added to ship");
         }
     }
 

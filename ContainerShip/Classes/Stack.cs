@@ -13,13 +13,28 @@ public class Stack
 
     public bool AddContainer(Container container)
     {
-        bool success = false;
-        if ((this.Height + container.Weight) < this.MaxWeight)
+        if ((this.Height + container.Weight) > this.MaxWeight)
         {
-            this.Containers.Add(container);
-            success = true;
+            return false;
         }
-        return success;
+        
+        // Check if there is already a valuable container in the stack because we can't have more than one
+        if (container.IsValuable)
+        {
+            if (this.Containers.Find(c => c.IsValuable) == null)
+            {
+                // always place on top 
+                this.Containers.Add(container);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        // add this container to bottom of stack Regular container
+        this.Containers.Insert(0, container);
+        return true;
     }
     
     
