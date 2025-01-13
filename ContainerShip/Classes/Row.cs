@@ -27,13 +27,32 @@ public class Row
         return _stacks.First().HasSpaceForWeight(0); // First stack is always cooled
     }
 
+
+    public bool IsPreviousAndNextReachable(int index)
+    {
+        if (index == 0 || index == Stacks.Count - 1)
+        {
+            return true;
+        }
+
+        return Stacks[index].IsAccessibleAtHeight(Stacks[index].Containers.Count, Stacks[index - 1], Stacks[index + 1]);
+    }
+
+
     public bool AddContainer(Container container)
     {
-        // For valuable containers, try to distribute them evenly across stacks
         if (container.IsValuable)
         {
             var eligibleStacks = _stacks
-                .Where(s => s.CanAdd(container))
+                .Where((s, index) =>
+                {
+                    if (!s.CanAdd(container)) return false;
+
+                    // Only check reachability for valuable containers
+                    if (!IsPreviousAndNextReachable(index)) return false;
+
+                    return true;
+                })
                 .OrderBy(s => s.Containers.Count)
                 .ToList();
 
@@ -43,7 +62,7 @@ public class Row
             return false;
         }
 
-        // For regular containers, try to fill stacks evenly
+        // For regular containers, try to fill stacks evenly without reachability check
         var sortedStacks = _stacks
             .Where(s => s.CanAdd(container))
             .OrderBy(s => s.Containers.Count)

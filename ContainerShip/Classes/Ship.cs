@@ -63,8 +63,6 @@ public class Ship
         // Calculate difference percentage based on total weight
         double difference = Math.Abs(leftWeight - rightWeight) / totalWeight * 100;
 
-        Console.WriteLine($"Ship balance - Left: {leftWeight}, Right: {rightWeight}, Difference: {difference}%");
-
         return difference <= 20;
     }
 
@@ -95,6 +93,31 @@ public class Ship
         Console.WriteLine($"[WARNING] Container {container.Type} could not be added to ship despite finding eligible rows");
     }
 
+    private void IsProperlyLoaded()
+    {
+        bool isProperlyLoaded = true;
+        int maxWeight = Length * Width * (Stack.MaxWeight + Container.MaxWeight);
+        int totalWeight = _rows.Sum(row => row.TotalWeight);
+
+        if (totalWeight <= 0.5 * maxWeight)
+        {
+            Console.WriteLine("[WARNING] Ship is not properly loaded - less than 50% of the ship is filled");
+            isProperlyLoaded = false;
+        }
+
+
+        if (!this.isBalanced())
+        {
+            Console.WriteLine("[WARNING] Ship is not properly loaded - not balanced");
+            isProperlyLoaded = false;
+        }
+
+        if (isProperlyLoaded)
+        {
+            Console.WriteLine("[INFO] Ship is properly loaded");
+        }
+    }
+
 
     public void ArrangeContainers(List<Container> containers)
     {
@@ -103,9 +126,6 @@ public class Ship
             this.AddContainer(container);
         }
 
-        if (!this.isBalanced())
-        {
-            Console.WriteLine("[WARNING] Ship is not balanced");
-        }
+        this.IsProperlyLoaded();
     }
 }
