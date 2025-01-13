@@ -18,13 +18,34 @@ public class Row
 
     public bool AddContainer(Container container)
     {
+        // Find stack with lowest height
+        Stack? lowestStack = null;
+        int lowestHeight = int.MaxValue;
+
         foreach (Stack stack in _stacks)
         {
-            if (stack.AddContainer(container))
+            int currentHeight = stack.Containers.Count;
+            if (currentHeight < lowestHeight)
+            {
+                lowestHeight = currentHeight;
+                lowestStack = stack;
+            }
+        }
+
+        if (lowestStack != null && lowestStack.AddContainer(container))
+        {
+            return true;
+        }
+
+        // Try other stacks as fallback
+        foreach (Stack stack in _stacks)
+        {
+            if (stack != lowestStack && stack.AddContainer(container))
             {
                 return true;
             }
         }
+
         return false;
     }
 
