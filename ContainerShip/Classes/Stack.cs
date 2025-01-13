@@ -5,6 +5,7 @@ public class Stack
     private readonly int _maxWeight = 120;
     public bool IsFirstRow { get; set; }
     public List<Container> Containers { get; set; }
+    public int Weight => Containers.Sum(c => c.Weight);
 
     public Stack(bool isFirstRow)
     {
@@ -12,50 +13,41 @@ public class Stack
         Containers = new List<Container>();
     }
 
+    public bool CanAdd(Container container)
+    {
+        if (Weight + container.Weight > _maxWeight)
+            return false;
+
+        if (container.RequiresCooling && !IsFirstRow)
+            return false;
+
+        if (container.IsValuable && Containers.Any(c => c.IsValuable))
+            return false;
+
+        return true;
+    }
+
+    public bool HasSpaceForWeight(int weight)
+    {
+        return (Weight + weight) <= _maxWeight;
+    }
 
     public bool AddContainer(Container container)
     {
-        if ((this.Weight + container.Weight) > this._maxWeight)
-        {
+        if (!CanAdd(container))
             return false;
-        }
-        
-        if (container.RequiresCooling && !IsFirstRow)
-        {
-            return false;
-        }
-        
-        // Check if there is already a valuable container in the stack because we can't have more than one
+
         if (container.IsValuable)
         {
-            if (this.Containers.Find(c => c.IsValuable) == null)
-            {
-                // always place on top 
-                this.Containers.Add(container);
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-            
+            // Valuable containers always go on top
+            Containers.Add(container);
         }
-        // add this container to bottom of stack Regular container
-        this.Containers.Insert(0, container);
-        return true;
-    }
-    
-    
-    private int Weight
-    {
-        get
+        else
         {
-            int weight = 0;
-            foreach (Container container in this.Containers)
-            {
-                weight += container.Weight;
-            }
-            return weight;
+            // Regular containers go at the bottom
+            Containers.Insert(0, container);
         }
+
+        return true;
     }
 }

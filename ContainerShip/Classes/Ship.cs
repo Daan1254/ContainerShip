@@ -70,40 +70,29 @@ public class Ship
 
     private void AddContainer(Container container)
     {
-        // Find the row with the lowest height
-        Row? lowestRow = null;
-        int lowestHeight = int.MaxValue;
+        // Find all rows that can potentially accept this container
+        var eligibleRows = _rows.Where(row =>
+            row.HasSpaceFor(container) &&
+            (!container.RequiresCooling || row.HasAvailableCooledSpace())
+        ).ToList();
 
-        foreach (Row row in _rows)
+        if (!eligibleRows.Any())
         {
-            int currentHeight = 0;
-            foreach (Stack stack in row.Stacks)
-            {
-                currentHeight = Math.Max(currentHeight, stack.Containers.Count);
-            }
-
-            if (currentHeight < lowestHeight)
-            {
-                lowestHeight = currentHeight;
-                lowestRow = row;
-            }
-        }
-
-        if (lowestRow != null && lowestRow.AddContainer(container))
-        {
+            Console.WriteLine($"[WARNING] Container {container.Type} could not be added to ship - no eligible rows");
             return;
         }
 
-        // If we couldn't add to the lowest row, try all rows as fallback
-        foreach (Row row in _rows)
+        // Sort rows by their total weight to find the least loaded rows
+        var sortedRows = eligibleRows.OrderBy(row => row.TotalWeight).ToList();
+
+        // Try to add to the least loaded row first
+        foreach (var row in sortedRows)
         {
-            if (row != lowestRow && row.AddContainer(container))
-            {
+            if (row.AddContainer(container))
                 return;
-            }
         }
 
-        Console.WriteLine($"[WARNING] Container {container.Type} could not be added to ship because of lack of space");
+        Console.WriteLine($"[WARNING] Container {container.Type} could not be added to ship despite finding eligible rows");
     }
 
 

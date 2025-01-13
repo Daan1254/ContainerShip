@@ -4,8 +4,9 @@ public class Row
 {
     private List<Stack> _stacks { get; set; }
 
-
     public IReadOnlyList<Stack> Stacks => _stacks.AsReadOnly();
+
+    public int TotalWeight => _stacks.Sum(stack => stack.Weight);
 
     public Row(int width)
     {
@@ -16,34 +17,42 @@ public class Row
         }
     }
 
+    public bool HasSpaceFor(Container container)
+    {
+        return _stacks.Any(stack => stack.CanAdd(container));
+    }
+
+    public bool HasAvailableCooledSpace()
+    {
+        return _stacks.First().HasSpaceForWeight(0); // First stack is always cooled
+    }
+
     public bool AddContainer(Container container)
     {
-        // Find stack with lowest height
-        Stack? lowestStack = null;
-        int lowestHeight = int.MaxValue;
-
-        foreach (Stack stack in _stacks)
+        // For valuable containers, try to distribute them evenly across stacks
+        if (container.IsValuable)
         {
-            int currentHeight = stack.Containers.Count;
-            if (currentHeight < lowestHeight)
-            {
-                lowestHeight = currentHeight;
-                lowestStack = stack;
-            }
-        }
+            var eligibleStacks = _stacks
+                .Where(s => s.CanAdd(container))
+                .OrderBy(s => s.Containers.Count)
+                .ToList();
 
-        if (lowestStack != null && lowestStack.AddContainer(container))
-        {
-            return true;
-        }
-
-        // Try other stacks as fallback
-        foreach (Stack stack in _stacks)
-        {
-            if (stack != lowestStack && stack.AddContainer(container))
-            {
+            if (eligibleStacks.Any() && eligibleStacks.First().AddContainer(container))
                 return true;
-            }
+
+            return false;
+        }
+
+        // For regular containers, try to fill stacks evenly
+        var sortedStacks = _stacks
+            .Where(s => s.CanAdd(container))
+            .OrderBy(s => s.Containers.Count)
+            .ToList();
+
+        foreach (var stack in sortedStacks)
+        {
+            if (stack.AddContainer(container))
+                return true;
         }
 
         return false;
@@ -51,13 +60,6 @@ public class Row
 
     public bool IsEmpty()
     {
-        foreach (Stack stack in this._stacks)
-        {
-            if (stack.Containers.Count > 0)
-            {
-                return false;
-            }
-        }
-        return true;
+        return _stacks.All(stack => stack.Containers.Count == 0);
     }
 }

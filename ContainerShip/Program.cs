@@ -13,25 +13,28 @@ Ship ship = new Ship(length, width);
 if (containerCount > 0)
 {
     List<Container> containers = new List<Container>();
+    Random random = new Random(); // Create Random instance once outside the loop
     for (int i = 0; i < containerCount; i++)
     {
-        Random random = new Random();
-        int containerType = random.Next(1, 5);
+        // Use weighted probability - 55% chance for regular container, 15% for others
+        int randomNum = random.Next(1, 101);
         int weight = random.Next(1, 26);
-        switch (containerType)
+
+        if (randomNum <= 55) // 55% chance
         {
-            case 1:
-                containers.Add(new RegularContainer(weight));
-                break;
-            case 2:
-                containers.Add(new ValuableContainer(weight));
-                break;
-            case 3:
-                containers.Add(new CoolableContainer(weight));
-                break;
-            case 4:
-                containers.Add(new ValuableCoolableContainer(weight));
-                break;
+            containers.Add(new RegularContainer(weight));
+        }
+        else if (randomNum <= 70) // 15% chance
+        {
+            containers.Add(new ValuableContainer(weight));
+        }
+        else if (randomNum <= 85) // 15% chance
+        {
+            containers.Add(new CoolableContainer(weight));
+        }
+        else // 15% chance
+        {
+            containers.Add(new ValuableCoolableContainer(weight));
         }
     }
 
