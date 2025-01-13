@@ -4,7 +4,6 @@ public class Ship
 {
     public int Length { get; private set; }
     public int Width { get; private set; }
-
     public IReadOnlyList<Row> Rows => _rows.AsReadOnly();
     private List<Row> _rows { get; set; }
 

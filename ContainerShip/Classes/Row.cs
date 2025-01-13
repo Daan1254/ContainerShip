@@ -27,18 +27,6 @@ public class Row
         return _stacks.First().HasSpaceForWeight(0); // First stack is always cooled
     }
 
-
-    public bool IsPreviousAndNextReachable(int index)
-    {
-        if (index == 0 || index == Stacks.Count - 1)
-        {
-            return true;
-        }
-
-        return Stacks[index].IsAccessibleAtHeight(Stacks[index].Containers.Count, Stacks[index - 1], Stacks[index + 1]);
-    }
-
-
     public bool AddContainer(Container container)
     {
         if (container.IsValuable)
@@ -49,7 +37,7 @@ public class Row
                     if (!s.CanAdd(container)) return false;
 
                     // Only check reachability for valuable containers
-                    if (!IsPreviousAndNextReachable(index)) return false;
+                    if (!IsStackReachable(index)) return false;
 
                     return true;
                 })
@@ -62,9 +50,31 @@ public class Row
             return false;
         }
 
-        // For regular containers, try to fill stacks evenly without reachability check
-        var sortedStacks = _stacks
-            .Where(s => s.CanAdd(container))
+        // For regular containers, check if adding them would block any valuable containers
+        List<Stack> sortedStacks = _stacks
+            .Where((s, index) =>
+            {
+                if (!s.CanAdd(container)) return false;
+
+                // Temporarily add the container to check if it blocks any valuable containers
+                s.Containers.Insert(0, container);
+
+                // Check if any valuable containers in adjacent stacks become unreachable
+                bool blocksValuable = false;
+                if (index > 0 && HasValuableContainers(_stacks[index - 1]))
+                {
+                    blocksValuable = !IsStackReachable(index - 1);
+                }
+                if (index < _stacks.Count - 1 && HasValuableContainers(_stacks[index + 1]))
+                {
+                    blocksValuable = blocksValuable || !IsStackReachable(index + 1);
+                }
+
+                // Remove the temporary container
+                s.Containers.RemoveAt(0);
+
+                return !blocksValuable;
+            })
             .OrderBy(s => s.Containers.Count)
             .ToList();
 
@@ -75,6 +85,16 @@ public class Row
         }
 
         return false;
+    }
+
+    private bool IsStackReachable(int index)
+    {
+        return index == 0 || index == _stacks.Count - 1;
+    }
+
+    private bool HasValuableContainers(Stack stack)
+    {
+        return stack.Containers.Any(c => c.IsValuable);
     }
 
     public bool IsEmpty()
