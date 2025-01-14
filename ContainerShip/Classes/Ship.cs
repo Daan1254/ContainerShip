@@ -68,7 +68,7 @@ public class Ship
     private void AddContainer(Container container)
     {
         // Find all rows that can potentially accept this container
-        var eligibleRows = _rows.Where(row =>
+        List<Row> eligibleRows = _rows.Where(row =>
             row.HasSpaceFor(container) &&
             (!container.RequiresCooling || row.HasAvailableCooledSpace(container))
         ).ToList();
@@ -80,10 +80,10 @@ public class Ship
         }
 
         // Sort rows by their total weight to find the least loaded rows
-        var sortedRows = eligibleRows.OrderBy(row => row.TotalWeight).ToList();
+        List<Row> sortedRows = eligibleRows.OrderBy(row => row.TotalWeight).ToList();
 
         // Try to add to the least loaded row first
-        foreach (var row in sortedRows)
+        foreach (Row row in sortedRows)
         {
             if (row.AddContainer(container))
                 return;
@@ -120,14 +120,11 @@ public class Ship
 
     public void ArrangeContainers(List<Container> containers)
     {
-        // sort containers by coolable first  
-        // and normal valuable containers last 
-
         containers = containers
             .OrderBy(container => container.Type != ContainerType.ValuableCoolable)
             .ThenBy(container => container.Type != ContainerType.Coolable)
-            .ThenBy(container => container.Type != ContainerType.Valuable)
             .ThenBy(container => container.Type != ContainerType.Regular)
+            .ThenBy(container => container.Type != ContainerType.Valuable)
             .ToList();
 
         Console.WriteLine($"[INFO] Arranging {containers.Count} containers");

@@ -5,7 +5,6 @@ public class ValuableContainer : Container
 
     public ValuableContainer(int weight) : base(ContainerType.Valuable, weight)
     {
-        IsValuable = true;
         Type = ContainerType.Valuable;
     }
 }
