@@ -15,11 +15,17 @@ public class Stack
 
     public bool CanAdd(Container container)
     {
-        if (Weight + container.Weight > MaxWeight)
-            return false;
+        if (container.IsValuable)
+            if (Containers.Skip(1).Sum(c => c.Weight) + container.Weight > MaxWeight)
+                return false;
+
+        if (!container.IsValuable)
+            if (Weight + container.Weight > MaxWeight)
+                return false;
 
         if (container.RequiresCooling && !IsFirstRow)
             return false;
+
 
         if (container.IsValuable && Containers.Any(c => c.IsValuable))
             return false;
@@ -27,18 +33,9 @@ public class Stack
         return true;
     }
 
-    public bool HasSpaceForWeight(int weight)
+    public bool HasSpaceForCoolable(Container container)
     {
-        return (Weight + weight) <= MaxWeight;
-    }
-
-    public bool IsAccessibleAtHeight(int height, Stack? frontNeighbor, Stack? backNeighbor)
-    {
-        // If we have a neighbor and they have no container at this height, it's accessible
-        bool frontClear = frontNeighbor == null || frontNeighbor.Containers.Count <= height;
-        bool backClear = backNeighbor == null || backNeighbor.Containers.Count <= height;
-
-        return frontClear || backClear;
+        return this.CanAdd(new CoolableContainer(0));
     }
 
     public bool AddContainer(Container container)

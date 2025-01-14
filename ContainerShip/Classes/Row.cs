@@ -8,10 +8,10 @@ public class Row
 
     public int TotalWeight => _stacks.Sum(stack => stack.Weight);
 
-    public Row(int width)
+    public Row(int length)
     {
         _stacks = new List<Stack>();
-        for (int i = 0; i < width; i++)
+        for (int i = 0; i < length; i++)
         {
             _stacks.Add(new Stack(i == 0));
         }
@@ -22,16 +22,16 @@ public class Row
         return _stacks.Any(stack => stack.CanAdd(container));
     }
 
-    public bool HasAvailableCooledSpace()
+    public bool HasAvailableCooledSpace(Container container)
     {
-        return _stacks.First().HasSpaceForWeight(0); // First stack is always cooled
+        return _stacks.First().HasSpaceForCoolable(container); // First stack is always cooled
     }
 
     public bool AddContainer(Container container)
     {
         if (container.IsValuable)
         {
-            var eligibleStacks = _stacks
+            List<Stack> eligibleStacks = _stacks
                 .Where((s, index) =>
                 {
                     if (!s.CanAdd(container)) return false;

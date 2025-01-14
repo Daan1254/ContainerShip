@@ -18,7 +18,7 @@ if (containerCount > 0)
     {
         // Use weighted probability - 55% chance for regular container, 15% for others
         int randomNum = random.Next(1, 101);
-        int weight = random.Next(15, 26);
+        int weight = random.Next(5, 26);
 
         if (randomNum <= 55) // 55% chance
         {

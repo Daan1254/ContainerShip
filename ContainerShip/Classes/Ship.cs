@@ -13,9 +13,9 @@ public class Ship
         Width = width;
         _rows = new List<Row>();
 
-        for (int i = 0; i < length; i++)
+        for (int i = 0; i < width; i++)
         {
-            _rows.Add(new Row(width));
+            _rows.Add(new Row(length));
         }
     }
 
@@ -70,7 +70,7 @@ public class Ship
         // Find all rows that can potentially accept this container
         var eligibleRows = _rows.Where(row =>
             row.HasSpaceFor(container) &&
-            (!container.RequiresCooling || row.HasAvailableCooledSpace())
+            (!container.RequiresCooling || row.HasAvailableCooledSpace(container))
         ).ToList();
 
         if (!eligibleRows.Any())
@@ -120,6 +120,17 @@ public class Ship
 
     public void ArrangeContainers(List<Container> containers)
     {
+        // sort containers by coolable first  
+        // and normal valuable containers last 
+
+        containers = containers
+            .OrderBy(container => container.Type != ContainerType.ValuableCoolable)
+            .ThenBy(container => container.Type != ContainerType.Coolable)
+            .ThenBy(container => container.Type != ContainerType.Valuable)
+            .ThenBy(container => container.Type != ContainerType.Regular)
+            .ToList();
+
+        Console.WriteLine($"[INFO] Arranging {containers.Count} containers");
         foreach (Container container in containers)
         {
             this.AddContainer(container);

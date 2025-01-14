@@ -40,8 +40,4 @@ public abstract class Container
     }
 
 
-    public virtual bool CanSupport(Container container)
-    {
-        return true;
-    }
 }

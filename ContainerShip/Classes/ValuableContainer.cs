@@ -8,10 +8,4 @@ public class ValuableContainer : Container
         IsValuable = true;
         Type = ContainerType.Valuable;
     }
-    public override bool CanSupport(Container container)
-    {
-        Console.WriteLine("Dikke vette huts");
-        return base.CanSupport(container);
-    }
-    
 }
