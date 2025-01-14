@@ -35,7 +35,7 @@ public class Stack
 
     public bool HasSpaceForCoolable(Container container)
     {
-        return this.CanAdd(new CoolableContainer(0));
+        return this.CanAdd(container);
     }
 
     public bool AddContainer(Container container)
