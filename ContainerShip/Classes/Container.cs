@@ -12,8 +12,8 @@ public abstract class Container
 {
     public int Weight { get; set; } = 4;
     public static int MaxWeight { get; set; } = 30;
-    public bool IsValuable { get; set; }
-    public bool RequiresCooling { get; set; }
+    public bool IsValuable { get; set; } = false;
+    public bool RequiresCooling { get; set; } = false;
 
     public ContainerType Type { get; set; } = ContainerType.Regular;
 
