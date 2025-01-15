@@ -121,8 +121,8 @@ public class Ship
     public void ArrangeContainers(List<Container> containers)
     {
         containers = containers
-            .OrderBy(container => container.Type != ContainerType.ValuableCoolable)
-            .ThenBy(container => container.Type != ContainerType.Coolable)
+            .OrderBy(container => container.Type != ContainerType.Coolable)
+            .ThenBy(container => container.Type != ContainerType.ValuableCoolable)
             .ThenBy(container => container.Type != ContainerType.Regular)
             .ThenBy(container => container.Type != ContainerType.Valuable)
             .ToList();
